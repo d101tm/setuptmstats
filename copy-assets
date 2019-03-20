@@ -1,4 +1,4 @@
-bin/bash
+#!/bin/bash
 . setup
 
 # Copy assets from the production server, making changes for this 
