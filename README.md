@@ -80,6 +80,9 @@ If you are using a shared folder with your guest, you also need to give yourself
 
 `sudo adduser $USER vboxsf`
 
+Go to the Machine/Devices menu item and enable a bidirectional clipboard.
+
+You can eject the Guest Additions DVD from your virtual machine at this point.
 
 ##### If you're using another virtualization program
 
@@ -161,7 +164,7 @@ git clone git@github.com:USERNAME/tmstats.git
 
 ```
 cd ~/src
-git clone https://github.com/d101tm/tmsetup.git
+git clone git@github.com:d101tm/tmsetup.gif
 ```
 
 #### Step 12:  Take a snapshot of your VM
@@ -180,13 +183,23 @@ Make sure your public key has been added to the server by issuing this command:
 
 `ssh d101dev@d101tm.org 'echo Remote user is $USER'`
 
-You should be prompted to accept the remote system's key; reply 'yes' to the prompt.  Then you should see a message: `Remote user is d101dev`.  If so, you're properly set up clone the server. 
+You may get a prompt like this:
+
+```
+The authenticity of host 'd101tm.org (69.163.170.135)' can't be established.
+ECDSA key fingerprint is SHA256:rWqwh967MZCQNhaBNBJ6bFWInpLjUkk1l+LW2VZD1+E.
+Are you sure you want to continue connecting (yes/no)? 
+```
+
+Reply 'yes'; the system will tell you that it's added the key to the list of known hosts.
+
+You should see a message: `Remote user is d101dev`.  If so, you're properly set up clone the server. 
 
 Now, issue these commands:
 
 ```
 cd ~/src/tmsetup
-fullinstall > install.log
+./fullinstall > install.log
 ```
 
 This will install and configure Apache, MySQL, PHP, Python, the D101TM.ORG website and code, and the TMSTATS code and data. Detailed output will be in `install.log`; you will get progress reports on your screen. If there are any prompts, reply appropriately (but I hope there aren't).
@@ -194,4 +207,8 @@ This will install and configure Apache, MySQL, PHP, Python, the D101TM.ORG websi
 
 ## Your machine now has a complete version of D101TM.ORG
 
-This includes the TMSTATS code (in ~/src/tmstats).  Have fun.
+This includes the TMSTATS code (in ~/src/tmstats).  
+
+The administrator of the WordPress site is 'd101dev' with a password of 'd101dev'.
+
+
