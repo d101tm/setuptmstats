@@ -1,0 +1,87 @@
+bin/bash
+. setup
+
+# Copy assets from the production server, making changes for this 
+#   environment.
+
+wpdb=d101tm_org
+statsdb=d101tm_tmstats
+wwwdir=/var/www/html
+mykeys="~$USER/.ssh/id_rsa"
+scpopts='-q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+cd ../tmstats
+srcdir=$PWD
+echo $PWD
+cd -
+
+# Create the databases if needed
+mysql <<-EOF
+CREATE DATABASE IF NOT EXISTS $wpdb;
+CREATE DATABASE IF NOT EXISTS $statsdb;
+EOF
+
+# Clone the tmstats database from the most recent dump (no changes needed)
+sayit "Cloning $statsdb"
+curl "https://d101tm.org/files/exports/tmstats.sql.gz" | gunzip | mysql $statsdb
+
+# Clone the WordPress database from the most recent dump
+sayit "Cloning $wpdb"
+curl "https://d101tm.org/files/exports/wp.sql.gz" | gunzip | mysql $wpdb
+
+# Clone the HTML directory from the server
+sayit 'Cloning actual website directory'
+sudo rsync -rtavL -e "ssh -i $mykeys $scpopts" --chown=www-data:www-data --delete --exclude 'cache/' d101dev@d101tm.org:~d101tm/www/ "$wwwdir/"
+
+# Handle the goofy linking of the files directory
+sudo ln -s /var/www/html/files /var/www/files
+
+# Now, fix up the wp-config.php file
+# Get rid of SSL, use localhost for MySQL, set the database userid/password
+edit="s_'[^']*/www/_'$wwwdir/_g"
+sudo -u www-data sed -i -e "$edit" ${wwwdir}/wp-config.php -e "s/mysql.d101tm.org/localhost/g" -e "/SSL/d" -e "s/'DB_USER'.*'.*'/'DB_USER', '$USER'/" -e "s/'DB_PASSWORD'.*'.*'/'DB_PASSWORD', '$USER'/"
+# And the wp-cache configuration
+sudo -u www-data sed -i -e "$edit" ${wwwdir}/wp-content/wp-cache-config.php
+# And link data/wp-config.php to the real thing
+sudo -u www-data ln -s ${wwwdir}/wp-config.php ${datadir}/wp-config.php 2>/dev/null
+
+# Remove the SSL rewrite in .htaccess
+sudo -u www-data sed -i "/HTTP/d" ${wwwdir}/.htaccess
+
+sudo -u www-data rm ${wwwdir}/files/.htaccess
+
+# Need access to the wp-config.php file
+sudo chown $USER "$wwwdir/wp-config.php"
+
+# Fix up the wp-config.php file
+(cd "$srcdir";./fixwpclone.py)
+
+# Remove Google Analytics from the database to avoid causing problems
+(cd "$srcdir";./removega.py --configfile "$wwwdir/wp-config.php")
+
+# Find the WP table prefix
+eval prefix=$(grep '$table_prefix' "$wwwdir/wp-config.php" | sed -e "s/.*'\\(.*\\)';/\\1/")
+
+# Give up access to the wp-config.php file
+sudo chown www-data "$wwwdir/wp-config.php"  
+
+# Now, clean up the necessary data in the options table
+# also, remove any transients.
+tablename=${prefix}options
+usertable=${prefix}users
+domain=$(./find-my-ip.py)   # Really an IP address.  So sue me.
+mysql $wpdb << EOF
+delete from $tablename where option_name like "%_transient%";
+update $tablename set option_value = "$domain" where option_value = "d101tm.org";
+update $tablename set option_value = "http://$domain" where option_value = "http://d101tm.org";
+update $tablename set option_value = "http://$domain" where option_value = "https://d101tm.org";
+update $tablename set option_value = "$wwwdir/wp-content/uploads/et_temp:" where option_name = "et_images_temp_folder";
+update $tablename set option_value = "TEST SITE" where option_name = 'blogname';
+update $tablename set option_value = "TEST SITE" where option_name = 'blogdescription';
+update $tablename set option_value = replace(option_value, '/home/d101tm/www/' , '$wwwdir/') where option_value like '%/www/%';
+delete from $tablename where option_name = 'jetpack_private_options';
+
+EOF
+
+
+# We would also like to change all references within the database to relative
+# URLs (and change files.d101tm.org to $domain/files), but that's for later.

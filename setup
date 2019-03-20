@@ -1,0 +1,10 @@
+# Set up environment for each step of the install process
+function sayit {
+    echo "$*" >&2
+}
+
+function install {
+    sayit "Installing $*"
+    sudo apt-get -qqy install $*
+}
+    

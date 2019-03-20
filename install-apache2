@@ -1,0 +1,36 @@
+#!/bin/bash
+. setup
+
+# Install and configure Apache2
+sayit 'Installing and configuring Apache2'
+install apache2
+
+# Add this user to the www-data group (for later)
+sudo adduser $USER www-data
+
+# Configure Apache
+sudo a2enmod rewrite   # enable mod-rewrite
+
+sudo /usr/bin/python - /etc/apache2/apache2.conf <<-EOF
+""" Fix up the AllowOverride statement for /var/www/"""
+import sys
+fn = sys.argv[1]
+with open(fn, 'r') as f:
+    data = f.read().split('\n')
+
+found = False
+for (linenum, line) in  enumerate(data):
+    if '<Directory /var/www/>' in line:
+        found = True
+    if found and 'AllowOverride' in line:
+        data[linenum] = '    AllowOverride All'
+        break
+
+with open(fn, 'w') as f:
+    f.write('\n'.join(data))
+EOF
+
+# Restart Apache
+sudo systemctl restart apache2 
+sayit 'Restarted Apache'
+

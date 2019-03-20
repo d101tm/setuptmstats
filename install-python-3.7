@@ -1,0 +1,22 @@
+#!/bin/bash
+. setup 
+
+# Install Python 3.7 and PIP3
+install python3.7 python3-pip python3.7-dev
+
+# Make 'python' and 'python3' aliases for Python 3.7
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+sudo update-alternatives --set python3 /usr/bin/python3.7
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+sudo update-alternatives --set python /usr/bin/python3.7
+
+# Update PIP3 to current level (installs 'pip' as an alias, too)
+sayit 'Updating pip'
+sudo -H pip3 install -U pip
+
+# And remove the old version of PIP3
+sayit 'Removing old pip'
+sudo apt-get -qqy remove python3-pip
+
+

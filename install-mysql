@@ -1,0 +1,47 @@
+#!/bin/bash
+. setup
+
+# Install MySQL server
+sayit 'Installing and configuring MySQL Server'
+install mysql-server
+
+# Now, lock down MySQL server
+# We don't set a root password
+# We make the default user the same as the current user, with a password
+#   of the username (so if the current user is fred, so is the password)
+
+sayit "Locking down MySQL server and giving $USER all privileges, with
+a passsword of $USER"
+sudo mysql <<-EOF
+# Remove anonymous users
+DELETE FROM mysql.user WHERE User='';
+# Remove remote root
+DELETE FROM mysql.user WHERE User='root' AND Host NOT in ('localhost', '127.0.0.1', '::1');
+# Drop test database
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR db='test\_%';
+# Set up d101dev user
+CREATE USER IF NOT EXISTS '$USER'@'localhost' IDENTIFIED BY '$USER';
+GRANT ALL PRIVILEGES ON *.* TO '$USER'@'localhost' WITH GRANT OPTION;
+# Allow remote access
+CREATE USER IF NOT EXISTS '$USER'@'%' IDENTIFIED BY '$USER';
+GRANT ALL PRIVILEGES ON *.* TO '$USER'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+EOF
+
+# Create ~/.my.cnf if it doesn't exist
+if [ ! -f ~/.my.cnf ] ; then
+    sayit 'Creating ~/.my.cnf file'
+    cat > ~/.my.cnf <<-EOF
+[client]
+user=$USER
+password=$USER
+EOF
+
+else
+    sayit '~/.my.cnf exists; not changed.'
+fi
+
+sayit 'Installing MySQL development'
+install libmysqlclient-dev

@@ -1,0 +1,14 @@
+#!/bin/bash
+. setup
+
+# Install everything
+
+./install-basic-tools
+./install-python-3.7
+./install-apache2
+./install-mysql
+./install-php
+./install-packages
+./update-code-and-data
+./copy-assets
+

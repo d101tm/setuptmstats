@@ -1,0 +1,30 @@
+#!/bin/bash
+. setup
+
+dir=../tmstats
+datadir=${dir}/data
+
+if [ ! -f ${dir}/tmglobals.py ] ; then
+    sayit "You MUST clone TMSTATS from YOUR fork on GitHub"
+    sayit "The command is:"
+    sayit ""
+    sayit "  git clone git@github.com:USERNAME/tmstats.git"
+    sayit ""
+    sayit "with your GitHub username instead of USERNAME"
+    exit 1
+else
+    sayit 'Updating code from GitHub'
+    (cd ${dir};git pull)
+fi
+
+# Now, pull the data directory
+if [ ! -d ${datadir} ] ; then
+    sayit "making ${datadir}"
+    mkdir ${datadir}
+fi
+
+sayit 'Updating data directory'
+rsync -vtzrL --exclude 'build' d101dev@d101tm.org:~d101tm/src/tmstats/data/ "${datadir}/"
+
+ sed -i "${datadir}/tmstats.yml" -e "s/dbuser:.*/dbuser: $USER/" -e "s/dbpass:.*/dbpass: $USER/" -e "s/dbhost:.*/dbhost: localhost/" -e "s@cachedir:.*@cachedir: /var/www/html/wp-content/cache/supercache/d101tm.org@"
+
