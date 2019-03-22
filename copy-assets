@@ -9,10 +9,7 @@ statsdb=d101tm_tmstats
 wwwdir=/var/www/html
 mykeys="~$USER/.ssh/id_rsa"
 scpopts='-q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
-cd ../tmstats
-srcdir=$PWD
-echo $PWD
-cd -
+srcdir="../tmstats"
 
 # Create the databases if needed
 mysql <<-EOF
