@@ -147,27 +147,7 @@ Create a directory to hold the Git repositories:
 
 `mkdir ~/src`
 
-#### Step 10:  Fork d101tm/tmstats on GitHub and clone your fork to the VM
-
-Log into GitHub and make a fork of d101tm/tmstats. This will be where you do your development and debugging; when you want to get your work onto the production server, you'll
-push it to your fork and make a pull request to have it merged into the d101tm/tmstats repository. This will give someone else on the team a chance to look at your code
-(especially for major changes) before we put it into production.
-
-Once you fork the code on GitHub, clone it to the VM with this command (replace USERNAME with your GitHub username, of course):
-
-```
-cd ~/src
-git clone git@github.com:USERNAME/tmstats.git
-```
-
-#### Step 11:  Clone the setup programs
-
-```
-cd ~/src
-git clone git@github.com:d101tm/tmsetup.gif
-```
-
-#### Step 12:  Take a snapshot of your VM
+#### Step 10:  Take a snapshot of your VM
 
 This will give you a good recovery point if you need it. Restarting the VM also ensures that your user is an active member of any groups you added it to.
 
@@ -175,7 +155,10 @@ Shutdown the VM (issue `sudo poweroff`) and take a snapshot.
 
 Now, you need to wait until the Webmaster tells you your public key has been added to the server.
 
+
 ### Clone the D101TM.ORG server and TMSTATS code
+
+#### Step 1:  Reboot your machine and verify your connection to the d101tm.org server
 
 Reboot your machine and log in.
 
@@ -193,9 +176,32 @@ Are you sure you want to continue connecting (yes/no)?
 
 Reply 'yes'; the system will tell you that it's added the key to the list of known hosts.
 
-You should see a message: `Remote user is d101dev`.  If so, you're properly set up clone the server. 
+You should see a message: `Remote user is d101dev`.  If so, you're properly set up and can continue; otherwise, check with the Webmaster to make sure your public key has been added to the server.
 
-Now, issue these commands:
+#### Step 2:  Fork d101tm/tmstats on GitHub and clone your fork to the VM
+
+Log into GitHub and make a fork of d101tm/tmstats. This will be where you do your development and debugging; when you want to get your work onto the production server, you'll
+push it to your fork and make a pull request to have it merged into the d101tm/tmstats repository. This will give someone else on the team a chance to look at your code
+(especially for major changes) before we put it into production.
+
+Once you fork the code on GitHub, clone it to the VM with this command (replace USERNAME with your GitHub username, of course):
+
+```
+cd ~/src
+git clone git@github.com:USERNAME/tmstats.git
+```
+
+#### Step 3:  Copy the setup programs to your VM
+
+```
+cd ~/src
+git clone git@github.com:d101tm/tmsetup.gif
+```
+
+#### Step 4:  Complete the installation and copying
+
+Issue these commands:
+
 
 ```
 cd ~/src/tmsetup
