@@ -16,7 +16,7 @@ You need to have a virtual machine (or a real one!) with Ubuntu 18.10.
 You can use either a server or a desktop image; if you use desktop, you
 will need more storage (both memory and disk space) on your host machine.
 
-### Install and Update the Base System
+### Part I: Install and Update the Base System
 
 
 #### Step 1: Install Ubuntu
@@ -156,7 +156,7 @@ Shutdown the VM (issue `sudo poweroff`) and take a snapshot.
 Now, you need to wait until the Webmaster tells you your public key has been added to the server.
 
 
-### Clone the D101TM.ORG server and TMSTATS code
+### Part II: Clone the D101TM.ORG server and TMSTATS code
 
 #### Step 1:  Reboot your machine and verify your connection to the d101tm.org server
 
@@ -191,11 +191,21 @@ cd ~/src
 git clone git@github.com:USERNAME/tmstats.git
 ```
 
+You may get a prompt like this:
+
+```
+The authenticity of host 'github.com (192.30.255.113)' can't be established.
+RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
+Are you sure you want to continue connecting (yes/no)?
+```
+
+Reply 'yes'; the system will tell you that it's added the key to the list of known hosts.
+
 #### Step 3:  Copy the setup programs to your VM
 
 ```
 cd ~/src
-git clone git@github.com:d101tm/tmsetup.gif
+git clone git@github.com:d101tm/tmsetup.git
 ```
 
 #### Step 4:  Complete the installation and copying
