@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Install phpmyadmin 4.8.5 (per https://devanswers.co/manually-upgrade-phpmyadmin/)
+
+curl https://files.phpmyadmin.net/phpMyAdmin/4.8.5/phpMyAdmin-4.8.5-all-languages.tar.gz | sudo tar xz
+sudo mv phpMyAdmin-4.8.5-all-languages/ phpmyadmin
+sudo mv phpmyadmin/ /usr/share/phpmyadmin
+sudo sed -i /usr/share/phpmyadmin/libraries/vendor_config.php -e "s'./tmp/'/var/lib/phpmyadmin/tmp/'" -e "s@define('CONFIG_DIR', ''@define('CONFIG_DIR', '/etc/phpmyadmin/'@"
