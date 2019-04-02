@@ -12,7 +12,7 @@ install mysql-server
 
 sayit "Locking down MySQL server and giving $USER all privileges, with
 a passsword of $USER"
-sudo mysql <<-EOF
+sudo mysql -uroot <<-EOF
 # Remove anonymous users
 DELETE FROM mysql.user WHERE User='';
 # Remove remote root
