@@ -8,6 +8,7 @@
 ./install-apache2
 ./install-mysql
 ./install-php
+./update-phpmyadmin  # Until the distributed version works
 ./install-packages
 ./update-code-and-data
 ./copy-assets

@@ -3,4 +3,4 @@
 
 # Install PHP
 sayit 'Installing PHP'
-install php libapache2-mod-php php-mysql
+install php libapache2-mod-php php-mysql phpmyadmin
