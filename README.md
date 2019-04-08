@@ -220,6 +220,36 @@ cd ~/src/tmsetup
 
 This will install and configure Apache, MySQL, PHP, Python, the D101TM.ORG website and code, and the TMSTATS code and data. Detailed output will be in `install.log`; you will get progress reports on your screen. If there are any prompts, reply appropriately (but I hope there aren't).
 
+#### Step 5:  Connect your local source tree to the d101tm source tree
+
+From time to time, you may need to pull the most current code (either all
+or some modules) from the version that's being used by d101tm.org itself.  To
+do this, issue these commands:
+
+```
+cd ~/src/tmstats
+git remote add upstream https://github.com/d101tm/tmstats.git
+```
+
+Make sure that everything is properly defined:
+
+```
+git remote -v
+```
+
+The response should look like this:
+
+```
+origin	git@github.com:USERNAME/tmstats.git (fetch)
+origin	git@github.com:USERNAME/tmstats.git (push)
+upstream	https://github.com/d101tm/tmstats.git (fetch)
+upstream	https://github.com/d101tm/tmstats.git (push)
+```
+
+with your Git username instead of USERNAME.
+
+This lets you compare or pull code from the "real" master repository, which
+will have the nickname of `upstream/master`. 
 
 ## Your machine now has a complete version of D101TM.ORG
 
