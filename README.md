@@ -205,7 +205,7 @@ Reply 'yes'; the system will tell you that it's added the key to the list of kno
 
 ```
 cd ~/src
-git clone git@github.com:d101tm/tmsetup.git
+git clone git@github.com:d101tm/setuptmstats.git
 ```
 
 #### Step 4:  Complete the installation and copying
@@ -214,7 +214,7 @@ Issue these commands:
 
 
 ```
-cd ~/src/tmsetup
+cd ~/src/setuptmstats
 ./fullinstall > install.log
 ```
 
