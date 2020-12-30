@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install MySQL server
-echo &2 'Installing and configuring MySQL Server'
+echo >&2 'Installing and configuring MySQL Server'
 sudo apt-get -qqv install mysql-server
 
 # Now, lock down MySQL server
@@ -9,7 +9,7 @@ sudo apt-get -qqv install mysql-server
 # We make the default user the same as the current user, with a password
 #   of the username (so if the current user is fred, so is the password)
 
-echo &2 "Locking down MySQL server and giving $USER all privileges, with
+echo >&2 "Locking down MySQL server and giving $USER all privileges, with
 a passsword of $USER"
 sudo mysql -uroot <<-EOF
 # Remove anonymous users
@@ -31,7 +31,7 @@ EOF
 
 # Create ~/.my.cnf if it doesn't exist
 if [ ! -f ~/.my.cnf ] ; then
-    echo &2 'Creating ~/.my.cnf file'
+    echo >&2 'Creating ~/.my.cnf file'
     cat > ~/.my.cnf <<-EOF
 [client]
 user=$USER
@@ -39,8 +39,8 @@ password=$USER
 EOF
 
 else
-    echo &2 '~/.my.cnf exists; not changed.'
+    echo >&2 '~/.my.cnf exists; not changed.'
 fi
 
-echo &2 'Installing MySQL development'
+echo >&2 'Installing MySQL development'
 sudo apt-get -qqv install libmysqlclient-dev
