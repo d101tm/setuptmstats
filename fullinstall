@@ -3,7 +3,7 @@
 # Install everything
 
 ./install-basic-tools
-./install-python-3
+./install-python-3-tools
 ./install-apache2
 ./install-mysql
 ./install-php
