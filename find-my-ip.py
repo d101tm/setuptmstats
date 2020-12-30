@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ Find the IP address of the interface with a default route
     From https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
 """

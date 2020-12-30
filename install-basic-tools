@@ -1,4 +1,3 @@
 #!/bin/bash
-. setup
-sayit 'Installing basic networking and development tools'
-install net-tools traceroute curl vim silversearcher-ag openssh-server
+echo >&2 'Installing basic networking and development tools'
+sudo apt-get -qqy install net-tools traceroute curl vim silversearcher-ag openssh-server

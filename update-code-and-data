@@ -1,5 +1,6 @@
 #!/bin/bash
-. setup
+echo 'REWRITE ME!' >&2
+exit
 
 dir=../tmstats
 datadir=${dir}/data

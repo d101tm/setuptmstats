@@ -1,9 +1,8 @@
 #!/bin/bash
-. setup
 
 # Install and configure Apache2
-sayit 'Installing and configuring Apache2'
-install apache2
+echo >&2 'Installing and configuring Apache2'
+sudo apt-get -qqy install apache2
 
 # Add this user to the www-data group (for later)
 sudo adduser $USER www-data
@@ -11,7 +10,7 @@ sudo adduser $USER www-data
 # Configure Apache
 sudo a2enmod rewrite   # enable mod-rewrite
 
-sudo /usr/bin/python - /etc/apache2/apache2.conf <<-EOF
+sudo /usr/bin/python3 - /etc/apache2/apache2.conf <<-EOF
 """ Fix up the AllowOverride statement for /var/www/"""
 import sys
 fn = sys.argv[1]
@@ -32,5 +31,5 @@ EOF
 
 # Restart Apache
 sudo systemctl restart apache2 
-sayit 'Restarted Apache'
+echo >&2 'Restarted Apache'
 

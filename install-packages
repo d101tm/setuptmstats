@@ -1,12 +1,11 @@
 #!/bin/bash
-. setup
 
-sayit 'Installing Python packages'
+echo &2 'Installing Python packages'
 
 sudo -H pip3 install bs4
 sudo -H pip3 install dropbox
 sudo -H pip3 install google-api-python-client
-sudo -H pip3 install google maps
+sudo -H pip3 install googlemaps
 sudo -H pip3 install gspread
 sudo -H pip3 install oauthclient
 sudo -H pip3 install pyres shapely xlrd xlsxwriter

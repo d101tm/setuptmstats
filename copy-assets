@@ -1,5 +1,4 @@
 #!/bin/bash
-. setup
 
 # Copy assets from the production server, making changes for this 
 #   environment.
@@ -18,15 +17,15 @@ CREATE DATABASE IF NOT EXISTS $statsdb;
 EOF
 
 # Clone the tmstats database from the most recent dump (no changes needed)
-sayit "Cloning $statsdb"
+echo &2 "Cloning $statsdb"
 curl "https://d101tm.org/files/exports/tmstats.sql.gz" | gunzip | mysql $statsdb
 
 # Clone the WordPress database from the most recent dump
-sayit "Cloning $wpdb"
+echo &2 "Cloning $wpdb"
 curl "https://d101tm.org/files/exports/wp.sql.gz" | gunzip | mysql $wpdb
 
 # Clone the HTML directory from the server
-sayit 'Cloning actual website directory'
+echo &2 'Cloning actual website directory'
 sudo rsync -rtavL -e "ssh -i $mykeys $scpopts" --chown=www-data:www-data --delete --exclude 'cache/' d101dev@d101tm.org:~d101tm/www/ "$wwwdir/"
 
 # Handle the goofy linking of the files directory
