@@ -2,7 +2,7 @@
 
 # Install MySQL server
 echo >&2 'Installing and configuring MySQL Server'
-sudo apt-get -qqv install mysql-server mysql-client-core-8.0
+sudo apt-get -qqy install mysql-server mysql-client-core-8.0
 
 # Now, lock down MySQL server
 # We don't set a root password
@@ -43,4 +43,4 @@ else
 fi
 
 echo >&2 'Installing MySQL development'
-sudo apt-get -qqv install libmysqlclient-dev
+sudo apt-get -qqy install libmysqlclient-dev
