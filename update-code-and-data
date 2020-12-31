@@ -35,4 +35,4 @@ sed -i tmstats.ini -e "s,/home/d101tm,$HOME," \
 	-e 's,^wpdir:.*,wpdir: /var/www/html,' \
 	-e "s,^dbuser:.*,dbuser: $USER," \
 	-e "s,^dbpass:.*,dbpass: $USER," \
-	-e "s,^dbhost:.*,dbpass: localhost," \
+	-e "s,^dbhost:.*,dbhost: localhost," \
