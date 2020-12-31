@@ -5,14 +5,15 @@ Install everything you need to work on TMSTATS on your own Ubuntu image
 ## Getting Started
 
 Follow this guide to install TMSTATS on your Ubuntu image.  This will
-include installing Python 3.7, MySQL 5.7, Apache, PHP 7.2, and a copy
-of the D101TM.ORG WordPress image.
+include MySQL, Apache, PHP, necessary Python tools and modules and a copy of the D101TM.ORG WordPress image.
 
-__Please note__ that you do __not__ download this package to your machine until Step 11 of these instructions!
+__Please note__ that you do __not__ download this package to your machine until Part II of these instructions!
 
 ### Prerequisites
 
-You need to have a virtual machine (or a real one!) with Ubuntu 18.10.
+You need to have a virtual machine (or a real one!) with Ubuntu 20.04 or later.
+These instructions were written using 20.04 LTS.
+
 You can use either a server or a desktop image; if you use desktop, you
 will need more storage (both memory and disk space) on your host machine.
 
@@ -23,14 +24,14 @@ will need more storage (both memory and disk space) on your host machine.
 
 ##### If you choose Ubuntu Desktop
 
-Set your VM size to 2GB, and have at least a 10GB Disk.
+Set your VM size to 2GB, and have at least a 25GB Disk.
 Set your network adapter to "Bridged Network".
 
 Install a "minimal system"; select the "update during installation" and "install 3rd party" checkboxes.
 
 ##### If you choose Ubuntu Server
 
-Set your VM size to 1GB, and have at least a 10GB Disk.
+Set your VM size to 1GB, and have at least a 25GB Disk.
 Set your network adapter to "Bridged Network".
 
 #### Step 2: Update Software
@@ -60,7 +61,7 @@ When the installation is finished, reboot.
 
 #### Step 3:  Update sudoers
 
-Issue `sudo visudo` and change all instances of " ALL" to " NOPASSWD:ALL"
+Issue `sudo visudo` and change all instances of ") ALL" to ") NOPASSWD:ALL"
 
 Save the file.
 
@@ -68,19 +69,14 @@ Save the file.
 
 ##### If you're using VirtualBox
 
-You want to install the VirtualBox Guest Additions before you proceed further.
-
-Open a terminal window and issue this command:
-
-`sudo apt-get install gcc make perl`
-
-Then go to the "Devices" menu for your VM and insert the Guest Additions image; let it install itself and reboot.
+You want to install the VirtualBox Guest Additions before you proceed further.  Check the VirtualBox documentation for the most current information, but as of
+the time I wrote this, all you have to do is  go to the "Devices" menu for your VM and insert the Guest Additions image; let it install itself and reboot.
 
 If you are using a shared folder with your guest, you also need to give yourself access to the folder.  Issue this command:
 
 `sudo adduser $USER vboxsf`
 
-Go to the Machine/Devices menu item and enable a bidirectional clipboard.
+Go to the Machine/Settings/General/Advanced menu item and enable a bidirectional clipboard and drag-and-drop if desired.
 
 You can eject the Guest Additions DVD from your virtual machine at this point.
 
@@ -88,7 +84,9 @@ You can eject the Guest Additions DVD from your virtual machine at this point.
 
 Proceed according to that program's instructions.
 
-#### Step 5:  Install or create your SSH keys
+#### Step 5:  Enable SSH into your system and install or create SSH keys
+
+Issue `sudo apt-get install openssh-server` to install the SSH server and start it.
 
 ##### If you already have a public/private key pair
 
@@ -128,7 +126,7 @@ Follow the procedure [here](https://help.github.com/en/articles/adding-a-new-ssh
 
 This will give you access to all of the files in the webserver's directory.  Issue:
 
-`sudo adduser $USER  www-data`
+`sudo adduser $USER www-data`
 
 #### Step 9: Install Git and make your ~/src directory
 
@@ -219,6 +217,14 @@ cd ~/src/setuptmstats
 ```
 
 This will install and configure Apache, MySQL, PHP, Python, the D101TM.ORG website and code, and the TMSTATS code and data. Detailed output will be in `install.log`; you will get progress reports on your screen. If there are any prompts, reply appropriately (but I hope there aren't).
+
+If you want to be able to access your site from elsewhere on your network, issue this command:
+
+```
+sudo ufw allow http
+```
+
+That will allow http requests INTO your virtual machine.
 
 #### Step 5:  Connect your local source tree to the d101tm source tree
 
