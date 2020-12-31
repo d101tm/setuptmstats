@@ -1,31 +1,38 @@
 #!/bin/bash
-echo 'REWRITE ME!' >&2
-exit
 
-dir=../tmstats
-datadir=${dir}/data
+dir=$HOME/src/tmstats
 
 if [ ! -f ${dir}/tmglobals.py ] ; then
-    sayit "You MUST clone TMSTATS from YOUR fork on GitHub"
-    sayit "The command is:"
-    sayit ""
-    sayit "  git clone git@github.com:USERNAME/tmstats.git"
-    sayit ""
-    sayit "with your GitHub username instead of USERNAME"
+    echo >&2 "You MUST clone TMSTATS from YOUR fork on GitHub"
+    echo >&2 "The command is:"
+    echo >&2 ""
+    echo >&2 "  git clone git@github.com:USERNAME/tmstats.git"
+    echo >&2 ""
+    echo >&2 "with your GitHub username instead of USERNAME"
     exit 1
 else
-    sayit 'Updating code from GitHub'
+    echo >&2 'Updating code from GitHub'
     (cd ${dir};git pull)
 fi
 
-# Now, pull the data directory
-if [ ! -d ${datadir} ] ; then
-    sayit "making ${datadir}"
-    mkdir ${datadir}
-fi
 
-sayit 'Updating data directory'
-rsync -vtzrL --exclude 'build' d101dev@d101tm.org:~d101tm/src/tmstats/data/ "${datadir}/"
+# Now, create the subdirectories we need and pull archives and pins from the server
+cd ${dir}
+mkdir work 2>/dev/null
+mkdir archives 2>/dev/null
+mkdir cursors 2>/dev/null
+mkdir pins 2>/dev/null
+mkdir workingalignment 2>/dev/null
+rsync -vtzrL d101dev@d101tm.org:~d101tm/src/tmstats/archives/ archives/
+rsync -vtzrL d101dev@d101tm.org:~d101tm/src/tmstats/pins/ pins/
+scp d101dev@d101tm.org:~d101tm/src/tmstats/tmstats.ini .
+scp d101dev@d101tm.org:~d101tm/src/tmstats/googleoauth2key.json .
 
- sed -i "${datadir}/tmstats.yml" -e "s/dbuser:.*/dbuser: $USER/" -e "s/dbpass:.*/dbpass: $USER/" -e "s/dbhost:.*/dbhost: localhost/" -e "s@cachedir:.*@cachedir: /var/www/html/wp-content/cache/supercache/d101tm.org@"
-
+# Finally, update the config file to reflect local information
+sed -i tmstats.ini -e "s,/home/d101tm,$HOME," \
+	-e 's,^copydir:.*,copydir: /var/www/html/files,' \
+	-e 's,^reportsdir:.*,reportsdir: /var/www/html/files/reports/,' \
+	-e 's,^wpdir:.*,wpdir: /var/www/html,' \
+	-e "s,^dbuser:.*,dbuser: $USER," \
+	-e "s,^dbpass:.*,dbpass: $USER," \
+	-e "s,^dbhost:.*,dbpass: localhost," \
