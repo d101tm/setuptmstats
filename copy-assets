@@ -26,7 +26,7 @@ curl "https://d101tm.org/files/exports/wp.sql.gz" | gunzip | mysql $wpdb
 
 # Clone the HTML directory from the server
 echo >&2 'Cloning actual website directory'
-sudo rsync -rtavL -e "ssh -i $mykeys $scpopts" --chown=www-data:www-data --delete --exclude 'cache/' d101dev@d101tm.org:~d101tm/www/ "$wwwdir/"
+sudo rsync -rtavL -e "ssh -i $mykeys $scpopts" --chown=www-data:www-data --delete d101dev@d101tm.org:~d101tm/www/ "$wwwdir/"
 
 # Handle the goofy linking of the files directory
 sudo ln -s /var/www/html/files /var/www/files
@@ -35,8 +35,11 @@ sudo ln -s /var/www/html/files /var/www/files
 # Get rid of SSL, use localhost for MySQL, set the database userid/password
 edit="s_'[^']*/www/_'$wwwdir/_g"
 sudo -u www-data sed -i -e "$edit" ${wwwdir}/wp-config.php -e "s/mysql.d101tm.org/localhost/g" -e "/SSL/d" -e "s/'DB_USER'.*'.*'/'DB_USER', '$USER'/" -e "s/'DB_PASSWORD'.*'.*'/'DB_PASSWORD', '$USER'/"
-# And the wp-cache configuration
-sudo -u www-data sed -i -e "$edit" ${wwwdir}/wp-content/wp-cache-config.php
+# And the wp-cache configuration if it exists
+if [ -f ${wwwdir}/wp-content/wp-cache-config.php ] ; 
+then
+	sudo -u www-data sed -i -e "$edit" ${wwwdir}/wp-content/wp-cache-config.php
+fi
 # And link data/wp-config.php to the real thing
 sudo -u www-data ln -s ${wwwdir}/wp-config.php ${datadir}/wp-config.php 2>/dev/null
 
@@ -52,7 +55,7 @@ sudo chown $USER "$wwwdir/wp-config.php"
 (cd "$srcdir";./fixwpclone.py)
 
 # Remove Google Analytics from the database to avoid causing problems
-(cd "$srcdir";./removega.py --configfile "$wwwdir/wp-config.php")
+(cd "$srcdir";./removega.py --wpconfigfile "$wwwdir/wp-config.php")
 
 # Find the WP table prefix
 eval prefix=$(grep '$table_prefix' "$wwwdir/wp-config.php" | sed -e "s/.*'\\(.*\\)';/\\1/")
@@ -69,7 +72,9 @@ mysql $wpdb << EOF
 delete from $tablename where option_name like "%_transient%";
 update $tablename set option_value = "$domain" where option_value = "d101tm.org";
 update $tablename set option_value = "http://$domain" where option_value = "http://d101tm.org";
+update $tablename set option_value = "http://$domain" where option_value = "http://www.d101tm.org";
 update $tablename set option_value = "http://$domain" where option_value = "https://d101tm.org";
+update $tablename set option_value = "http://$domain" where option_value = "https://www.d101tm.org";
 update $tablename set option_value = "$wwwdir/wp-content/uploads/et_temp:" where option_name = "et_images_temp_folder";
 update $tablename set option_value = "TEST SITE" where option_name = 'blogname';
 update $tablename set option_value = "TEST SITE" where option_name = 'blogdescription';
