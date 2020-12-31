@@ -2,4 +2,5 @@
 
 # Install Python 3 tools
 echo >&2 'Installing Python 3 tools'
-sudo apt-get -qqy install  python3-pip python3-dev idle
+sudo apt-get -qqy install  python3-pip python3-dev idle python3-testresources
+
