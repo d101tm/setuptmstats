@@ -83,6 +83,13 @@ delete from $tablename where option_name = 'jetpack_private_options';
 
 EOF
 
-
-# We would also like to change all references within the database to relative
-# URLs (and change files.d101tm.org to $domain/files), but that's for later.
+# Change all references to d101tm.org and files.d101tm.org to be relative.
+poststable=${prefix}posts
+mysql $wpdb  << EOF
+update $poststable set post_content=replace(post_content,'="http://files.d101tm.org', '="/files') where post_content like '%="http://files.d101tm.org%';
+update $poststable set post_content=replace(post_content,'="https://files.d101tm.org', '="/files') where post_content like '%="https://files.d101tm.org%';
+update $poststable set post_content=replace(post_content,'="http://d101tm.org', '="') where post_content like '%="http://d101tm.org%';
+update $poststable set post_content=replace(post_content,'="https://d101tm.org', '="') where post_content like '%="https://d101tm.org%';
+update $poststable set post_content=replace(post_content,'="http://www.d101tm.org', '="') where post_content like '%="http://www.d101tm.org%';
+update $poststable set post_content=replace(post_content,'="https://www.d101tm.org', '="') where post_content like '%="https://www.d101tm.org%';
+EOF
