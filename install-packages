@@ -3,11 +3,14 @@
 echo >&2 'Installing Python packages'
 
 sudo -H pip3 install bs4
+sudo -H pip3 install oauth2client
 sudo -H pip3 install dropbox
 sudo -H pip3 install google-api-python-client
 sudo -H pip3 install googlemaps
 sudo -H pip3 install gspread
 sudo -H pip3 install oauthclient
 sudo -H pip3 install pyres shapely xlrd xlsxwriter
+sudo -H pip3 install pytess 
 sudo -H pip3 install mysqlclient
+# find out a way to fun findneeds.py without sudo
 
